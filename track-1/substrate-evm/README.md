@@ -166,6 +166,31 @@ The course should cover:
 Incorrect gas-to-weight mapping can make the chain vulnerable to denial of
 service or make contracts uneconomical to use.
 
+A runtime configuration sketch should make these choices explicit. The exact
+associated types vary by Frontier and Polkadot SDK version, so this is a shape
+for course discussion rather than drop-in code:
+
+```rust
+parameter_types! {
+    pub const ChainId: u64 = 420_420;
+    pub BlockGasLimit: U256 = U256::from(30_000_000_u64);
+}
+
+impl pallet_evm::Config for Runtime {
+    type ChainId = ChainId;
+    type Currency = Balances;
+    type AddressMapping = HashedAddressMapping<BlakeTwo256>;
+    type GasWeightMapping = FixedGasWeightMapping<Runtime>;
+    type BlockGasLimit = BlockGasLimit;
+    type PrecompilesType = FrontierPrecompiles<Runtime>;
+    type PrecompilesValue = FrontierPrecompiles<Runtime>;
+}
+```
+
+The lesson should ask learners to replace placeholders with the actual runtime
+types used by their node template, then verify that gas charging, native
+balance withdrawal, and block weight accounting agree.
+
 ### Ethereum Transaction Emulation
 
 For full Ethereum compatibility, the chain needs to accept and process
@@ -203,6 +228,30 @@ should demonstrate:
 The course should also explain which RPCs are intentionally unsupported. Some
 Ethereum testing helpers assume RPC methods that may not exist on a Polkadot SDK
 chain.
+
+At the workshop level, a simple RPC smoke test makes compatibility concrete:
+
+```sh
+RPC_URL=http://127.0.0.1:8545
+
+cast chain-id --rpc-url "$RPC_URL"
+cast block-number --rpc-url "$RPC_URL"
+cast balance "$DEV_EVM_ADDRESS" --rpc-url "$RPC_URL"
+```
+
+For deployment, use local development keys through environment variables rather
+than committing private keys to the repository:
+
+```sh
+forge create Counter \
+  --rpc-url "$RPC_URL" \
+  --private-key "$DEV_PRIVATE_KEY"
+```
+
+The expected observations should be part of the course: the chain ID matches
+the runtime constant, block number advances as the node authors blocks, the
+funded account has a native-backed EVM balance, and deployment returns a
+receipt that can be fetched with `eth_getTransactionReceipt`.
 
 ### Precompiles
 

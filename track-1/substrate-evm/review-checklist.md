@@ -12,6 +12,8 @@ blockchain course bounty.
 - [ ] The module distinguishes `pallet-evm` execution from full Ethereum
   JSON-RPC compatibility.
 - [ ] The module includes implementation guidance and expected observations.
+- [ ] Runtime and RPC sketches are clearly illustrative and do not include
+  committed private keys.
 - [ ] Public references are included.
 
 ## Runtime Correctness

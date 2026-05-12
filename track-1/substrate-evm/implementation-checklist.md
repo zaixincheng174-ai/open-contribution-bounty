@@ -11,6 +11,8 @@ present.
 - [ ] The README explains the difference between EVM execution support and full
   Ethereum ecosystem compatibility.
 - [ ] The README identifies the runtime layer and node/RPC layer separately.
+- [ ] Runtime configuration and RPC examples are concrete enough to guide a
+  learner while remaining clearly labeled as sketches.
 - [ ] References are public and reachable.
 - [ ] No private keys, seed phrases, RPC secrets, or funded wallet material are
   included.
@@ -47,6 +49,8 @@ present.
 - [ ] The Frontier or Ethereum RPC components are identified.
 - [ ] The local HTTP and WebSocket RPC endpoints are documented.
 - [ ] Unsupported Ethereum RPC methods are called out instead of hidden.
+- [ ] RPC smoke-test commands verify chain ID, block number, and account
+  balance against the local node.
 
 ## Developer Tooling
 
@@ -54,6 +58,8 @@ present.
 - [ ] The course includes a wallet connection path.
 - [ ] The course includes a Hardhat, Foundry, Remix, ethers, or viem deployment
   path.
+- [ ] Deployment examples use environment variables for local development keys
+  and do not commit key material.
 - [ ] The course verifies `eth_chainId`.
 - [ ] The course verifies contract deployment.
 - [ ] The course verifies a read-only contract call.
