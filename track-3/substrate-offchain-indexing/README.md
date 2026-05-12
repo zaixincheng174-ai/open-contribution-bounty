@@ -98,6 +98,72 @@ data may be overwritten in ways that differ across nodes.
 When in doubt, use keys that preserve enough context to distinguish block,
 call, and payload identity.
 
+## Runtime write sketch
+
+The runtime write path is small, but the surrounding checks matter. The
+following sketch shows the shape of an extrinsic that stores only a commitment
+on-chain while writing the larger payload into the node-local Offchain DB.
+
+This is an illustrative pallet fragment, not a complete drop-in module:
+
+```rust
+use codec::Encode;
+
+fn document_key<T: frame_system::Config>(
+    owner: &T::AccountId,
+    block_number: T::BlockNumber,
+    document_hash: T::Hash,
+) -> Vec<u8> {
+    (
+        b"my_pallet",
+        b"v1",
+        b"document",
+        owner,
+        block_number,
+        document_hash,
+    )
+        .encode()
+}
+
+pub fn submit_document(
+    origin: OriginFor<T>,
+    document: BoundedVec<u8, T::MaxDocumentBytes>,
+    document_hash: T::Hash,
+) -> DispatchResult {
+    let owner = ensure_signed(origin)?;
+    ensure!(T::Hashing::hash(&document) == document_hash, Error::<T>::BadHash);
+
+    DocumentCommitments::<T>::insert(
+        &owner,
+        document_hash,
+        frame_system::Pallet::<T>::block_number(),
+    );
+
+    let key = document_key::<T>(
+        &owner,
+        frame_system::Pallet::<T>::block_number(),
+        document_hash,
+    );
+    sp_io::offchain_index::set(&key, &document.encode());
+
+    Ok(())
+}
+```
+
+The on-chain `DocumentCommitments` entry is the part that other consensus
+logic can rely on. The indexed bytes are only helper data for a node, worker,
+or local service that has off-chain indexing enabled and has processed the
+block that wrote the value.
+
+When testing this pattern, run at least one local node with off-chain indexing
+enabled and verify that the reader:
+
+- Derives the same key as the runtime.
+- Decodes the expected version of the payload.
+- Hashes the local bytes and compares them with the on-chain commitment.
+- Handles a missing local value as a recoverable availability problem.
+- Waits for finality if the downstream action must only use canonical data.
+
 ## Data encoding and versioning
 
 Off-chain indexed values are bytes. The chain team must choose and document the

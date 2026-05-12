@@ -18,6 +18,8 @@ or accepting it as a Track 3 technical blog submission.
 ## Technical completeness
 
 - `sp_io::offchain_index` is introduced.
+- The article includes an implementation sketch that shows key derivation,
+  commitment storage, `offchain_index::set`, and reader-side verification.
 - Key design, namespacing, versioning, encoding, and payload size are covered.
 - Fork/reorg/replay risks are discussed.
 - On-chain commitments and local verification are included.
@@ -27,6 +29,8 @@ or accepting it as a Track 3 technical blog submission.
 
 - The example architecture shows how to keep a commitment on-chain while
   storing a larger local payload off-chain.
+- Builders can translate the sketch into a pallet design without confusing
+  local indexed data for consensus storage.
 - The article gives concrete key-design ingredients.
 - The security boundary is explicit enough for a reviewer to audit a pallet
   design.
