@@ -166,6 +166,8 @@ Useful checks include:
 - Local logs with retention and searchable incident history.
 - Prometheus metrics exposed only to trusted monitoring infrastructure.
 - Host metrics for CPU, memory, disk I/O, disk capacity, and network traffic.
+- Import and queue signals that show whether the node is receiving work faster
+  than it can process blocks.
 - Alerts for stalled best block, stalled finalized block, low peer count,
   process restarts, disk pressure, and RPC error rate.
 - External checks for public RPC or load-balanced endpoints, if the node serves
@@ -200,6 +202,19 @@ memory, disk, and network panels in a host section; and put RPC request rate,
 latency, and error rate in an application-facing section. This layout helps an
 operator see whether an incident starts in the chain, the machine, or the
 public endpoint path.
+
+## Upgrade and resource-pressure watchpoints
+
+Runtime upgrades, client releases, and infrastructure migrations deserve closer
+monitoring than a normal steady-state period. After a change, operators should
+watch whether best block, finalized block, peer count, import queues, database
+activity, and host resource metrics continue to move together.
+
+A node that keeps receiving blocks but imports them slowly may look partially
+alive while it falls behind the network. That pattern usually points to local
+resource pressure, slow storage, database work, or an overloaded node role. The
+fastest response is to compare Telemetry with local metrics and logs before
+assuming a network-wide incident.
 
 ## Reading common symptoms
 

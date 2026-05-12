@@ -22,6 +22,8 @@ before publishing or accepting it as a Track 3 technical blog submission.
 - The article includes practical troubleshooting for missing telemetry, low
   peers, stalled finality, and RPC issues.
 - The article includes a production monitoring baseline beyond Telemetry.
+- The article covers import queue and resource-pressure watchpoints for
+  upgrades, releases, and migrations.
 - The article gives concrete alert and Grafana dashboard examples without
   pretending example metric names are universal.
 - The article discusses security and privacy considerations for node names,
