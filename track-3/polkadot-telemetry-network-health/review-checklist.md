@@ -22,12 +22,16 @@ before publishing or accepting it as a Track 3 technical blog submission.
 - The article includes practical troubleshooting for missing telemetry, low
   peers, stalled finality, and RPC issues.
 - The article includes a production monitoring baseline beyond Telemetry.
+- The article gives concrete alert and Grafana dashboard examples without
+  pretending example metric names are universal.
 - The article discusses security and privacy considerations for node names,
   validator topology, Prometheus, and RPC exposure.
 
 ## Builder usefulness
 
 - Operators can turn the monitoring baseline into real alerts and runbooks.
+- Operators can separate chain health, host health, and RPC-user health when
+  building dashboards.
 - Developers can understand why user-facing RPC health is different from P2P
   node health.
 - The symptom sections map dashboard observations to concrete next checks.

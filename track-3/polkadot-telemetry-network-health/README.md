@@ -176,6 +176,31 @@ Useful checks include:
 The exact alert thresholds should be network-specific. A validator, a collator,
 an archive RPC node, and a temporary test node do not need the same policy.
 
+## Alert and dashboard examples
+
+Prometheus and Grafana should turn the baseline into repeatable operator
+signals. The exact metric names depend on the node version, exporter, and host
+monitoring stack, so teams should verify names in their own `/metrics` output
+instead of copying example expressions blindly.
+
+Good starting alerts include:
+
+- Best block has not increased for several minutes while comparable peers keep
+  moving.
+- Finalized block has stopped advancing while best block still imports.
+- Peer count stays below the node role's minimum operating range.
+- Process restarts exceed the expected deployment or maintenance pattern.
+- Disk capacity, disk I/O wait, memory pressure, or CPU saturation crosses the
+  host team's operational threshold.
+- Public RPC error rate or latency rises while Telemetry still looks healthy.
+
+A useful Grafana dashboard should separate chain health from host and user
+traffic. Put block height, finalized height, and peer count together; keep CPU,
+memory, disk, and network panels in a host section; and put RPC request rate,
+latency, and error rate in an application-facing section. This layout helps an
+operator see whether an incident starts in the chain, the machine, or the
+public endpoint path.
+
 ## Reading common symptoms
 
 ### The node is not visible on Telemetry
@@ -277,3 +302,4 @@ mistaking a single dashboard signal for complete node health.
 - [Polkadot Developer Docs: Run an RPC Node](https://docs.polkadot.com/infrastructure/running-a-node/)
 - [Polkadot Developer Docs: Start Validating](https://docs.polkadot.com/node-infrastructure/run-a-validator/onboarding-and-offboarding/start-validating/)
 - [Prometheus Documentation: Overview](https://prometheus.io/docs/introduction/overview/)
+- [Grafana Documentation: Dashboards](https://grafana.com/docs/grafana/latest/dashboards/)
