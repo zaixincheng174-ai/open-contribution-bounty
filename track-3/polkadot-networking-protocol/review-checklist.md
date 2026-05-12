@@ -17,6 +17,8 @@ publishing or accepting it as a Track 3 technical blog submission.
 
 - Peer discovery, bootnodes, node identity, block sync, transaction
   propagation, and validator or collator communication are covered.
+- The article includes concrete message-flow examples for node sync, submitted
+  transaction propagation, and sentry-protected validator connectivity.
 - The article explains why parachain data makes Polkadot networking broader
   than simple block gossip.
 - Operational patterns such as sentry nodes, reserved peers, metrics, and
@@ -26,6 +28,8 @@ publishing or accepting it as a Track 3 technical blog submission.
 ## Builder usefulness
 
 - The article gives readers a practical mental model for how nodes communicate.
+- The message-flow examples connect abstract networking roles to operator
+  checks.
 - The operator checklist is concrete enough to support a production-readiness
   review.
 - Troubleshooting guidance distinguishes network, RPC, and infrastructure

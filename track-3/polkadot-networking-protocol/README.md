@@ -107,6 +107,51 @@ peer network so block producers can include them.
 Fourth, it serves data to other peers. A well-connected full node is not only a
 consumer of network data. It can also help other peers sync and stay healthy.
 
+## Message flow examples
+
+Three concrete flows make the networking model easier to review.
+
+### A new full node catches up
+
+1. The node starts with a chain specification and discovers initial peers
+   through bootnodes or reserved peers.
+2. It negotiates supported protocols with connected peers.
+3. It requests headers, blocks, and state data needed for sync.
+4. It imports valid blocks locally and updates best and finalized block state.
+5. After catching up, it continues listening for new blocks and serving useful
+   data to other peers.
+
+If this flow fails, check chain specification, bootnode reachability, P2P
+listening address, firewall rules, disk performance, and node version before
+assuming a consensus problem.
+
+### A submitted transaction reaches block producers
+
+1. A wallet, script, or application submits an extrinsic through RPC.
+2. The receiving node validates it enough to place it in the transaction pool.
+3. The transaction is gossiped to peers according to the node's networking and
+   transaction-pool behavior.
+4. A block producer can include the transaction if it is still valid and
+   eligible for the block being built.
+5. Other nodes import the block and remove included or invalidated
+   transactions from their local view.
+
+This is why RPC health and P2P health both matter. A public RPC endpoint can
+accept traffic while the node has poor peer propagation, and a well-connected
+private node may intentionally expose no public RPC service at all.
+
+### A validator uses sentry nodes
+
+1. Public peers connect to one or more sentry nodes.
+2. The validator keeps reserved connections to its sentries.
+3. Firewall rules restrict direct public access to the validator machine.
+4. The sentries relay the network data the validator needs for its role.
+5. Operators monitor both the sentries and the validator, because either layer
+   can break the path.
+
+The sentry pattern protects the validator's exposure, but it does not remove
+the need for version alignment, peer monitoring, and incident runbooks.
+
 ## Validators, collators, and parachain data
 
 Polkadot's networking layer becomes more specialized for validators and
