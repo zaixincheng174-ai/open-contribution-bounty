@@ -77,6 +77,38 @@ The pallet should reject:
 - Zero-output or malformed transactions unless explicitly allowed.
 - Outputs below the configured dust threshold, if the course includes one.
 
+An educational implementation can start with this shape. It is intentionally
+illustrative; concrete derives, bounds, and encoding choices depend on the
+runtime template used by the course.
+
+```rust
+pub struct OutPoint {
+    pub tx_hash: H256,
+    pub output_index: u32,
+}
+
+pub struct TransactionInput {
+    pub previous_output: OutPoint,
+    pub signature: Vec<u8>,
+    pub public_key: Vec<u8>,
+}
+
+pub struct TransactionOutput<Balance> {
+    pub value: Balance,
+    pub locking_key: Vec<u8>,
+}
+
+pub struct Transaction<Balance> {
+    pub inputs: Vec<TransactionInput>,
+    pub outputs: Vec<TransactionOutput<Balance>>,
+}
+```
+
+The course should then make learners implement the state transition as one
+atomic operation: load all referenced inputs, verify the spend, remove consumed
+UTXOs, and insert new outputs. Avoid a partial update path where one input is
+removed before a later signature or value check fails.
+
 ### Unsigned Extrinsic Validation
 
 Bitcoin transactions are signed internally. A Substrate UTXO pallet can therefore
@@ -97,6 +129,38 @@ The validation path should:
 Unsigned does not mean unauthenticated. It means the Substrate extrinsic wrapper
 does not use an account signature because the UTXO transaction already carries
 its own authorization.
+
+A useful validation sketch is:
+
+```rust
+impl<T: Config> ValidateUnsigned for Pallet<T> {
+    type Call = Call<T>;
+
+    fn validate_unsigned(
+        _source: TransactionSource,
+        call: &Self::Call,
+    ) -> TransactionValidity {
+        let Call::spend { transaction } = call else {
+            return InvalidTransaction::Call.into();
+        };
+
+        let checked = Self::check_transaction(transaction)
+            .map_err(|_| InvalidTransaction::Custom(1))?;
+
+        ValidTransaction::with_tag_prefix("utxo-spend")
+            .and_provides(checked.input_tags)
+            .priority(checked.fee_rate)
+            .longevity(64_u64)
+            .propagate(true)
+            .build()
+    }
+}
+```
+
+The exact API may differ by Polkadot SDK version, but the lesson should keep the
+same security boundary: transaction-pool validation rejects bad signatures,
+missing inputs, duplicate inputs, stale formats, and input conflicts before a
+miner includes the transaction.
 
 ### Proof-of-Work Node Service
 

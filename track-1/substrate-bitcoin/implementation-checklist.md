@@ -11,6 +11,8 @@ Core compatibility.
   conversion boundaries.
 - [ ] Any snippets are identified as illustrative unless they are copied from a
   tested implementation.
+- [ ] Type and `ValidateUnsigned` examples are concrete enough to guide a
+  learner while remaining clearly labeled as sketches.
 - [ ] References are public and reachable.
 - [ ] No private keys, seed phrases, or RPC secrets are included.
 

@@ -11,6 +11,8 @@ course bounty.
 - [ ] The module is usable as a course without requiring hidden Discord context.
 - [ ] The module does not claim full Bitcoin compatibility.
 - [ ] The module includes implementation and verification guidance.
+- [ ] Code sketches are clearly illustrative and reinforce the UTXO and unsigned
+  validation boundaries.
 - [ ] Public references are included.
 
 ## UTXO Correctness
