@@ -208,6 +208,29 @@ This workflow treats Kusama as a real production stage, not a casual sandbox.
 It also protects Polkadot users from designs that have not yet faced live
 network conditions.
 
+## Launch readiness questions
+
+Before choosing a network, a team should answer a few concrete questions:
+
+- Has the runtime, application, or XCM flow already been tested on a local
+  chain and a public testnet?
+- Does the team need live governance and economic feedback before a stable
+  launch?
+- Can the team monitor runtime upgrades, governance activity, validator or
+  collator health, indexers, wallets, and user-facing incidents?
+- Is the expected user base comfortable with faster iteration and higher
+  volatility, or does it require a more conservative production surface?
+- Can the team support two communities and two release tracks if it chooses
+  both networks?
+- Are migration, incident response, and communication plans written before
+  value-bearing users are exposed?
+
+If the answers point to learning under real conditions, Kusama may be the
+right first production stage. If the answers point to mature operations,
+conservative users, and a hardened design, Polkadot may be the better target.
+If the team cannot monitor or communicate changes on either network, it should
+keep rehearsing on local and testnet environments first.
+
 ## Summary
 
 Polkadot and Kusama are complementary networks. Polkadot is the stable,

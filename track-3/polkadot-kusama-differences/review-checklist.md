@@ -21,6 +21,8 @@ publishing or accepting it as a Track 3 technical blog submission.
 - The main differences are covered: risk tolerance, governance cadence,
   deployment strategy, cost profile, and community expectations.
 - The article explains when a team might choose Polkadot, Kusama, or both.
+- The article includes launch-readiness questions that connect network choice
+  to testing, monitoring, user expectations, and incident response.
 - The article includes common misconceptions and corrects them directly.
 
 ## Builder usefulness
@@ -29,6 +31,8 @@ publishing or accepting it as a Track 3 technical blog submission.
   branding differences.
 - The staged launch workflow is realistic for builders moving from testnets to
   Kusama and Polkadot.
+- The readiness questions help builders decide whether they are prepared for
+  either value-bearing network.
 - The tone is neutral and does not treat either network as universally better.
 - The article makes the risk tradeoff explicit for teams choosing a launch
   network.
