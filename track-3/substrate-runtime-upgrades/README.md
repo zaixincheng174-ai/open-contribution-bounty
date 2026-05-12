@@ -133,6 +133,36 @@ large or unbounded number of keys, a multi-block migration or staged design may
 be necessary. An overweight migration can halt a chain because the runtime
 upgrade code is mandatory once the new runtime is enacted.
 
+## Migration review template
+
+For any upgrade that changes storage, reviewers should require a short
+migration note before the proposal is submitted. A useful note answers these
+questions in one place:
+
+- Old storage: pallet, storage item, old type, old storage version, and
+  expected key count.
+- New storage: new type, new storage version, and whether old data is retained,
+  transformed, or deleted.
+- Trigger: why the migration is needed and which runtime change would fail
+  without it.
+- Bounds: maximum reads, writes, decoded value sizes, and whether the work fits
+  in one block.
+- Weight: how the migration weight was estimated and where that weight is
+  returned.
+- Guards: storage-version checks that prevent the migration from running twice.
+- Try-runtime state: snapshot, live state source, or fixture used for
+  `pre_upgrade` and `post_upgrade`.
+- Invariants: conditions that must hold after the upgrade, such as item counts,
+  balances, ownership, or indexes.
+- Cleanup: old prefixes, obsolete values, or compatibility paths removed after
+  success.
+- Operations: who watches the upgrade block, which events or logs confirm
+  success, and what follow-up checks run.
+
+This template is intentionally plain. Its purpose is to force the team to make
+implicit migration assumptions reviewable before those assumptions become
+on-chain code.
+
 ## Testing with try-runtime
 
 `try-runtime` exists to catch migration mistakes before they reach production.

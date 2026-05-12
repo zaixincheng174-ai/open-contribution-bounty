@@ -25,10 +25,15 @@ accepting it as a Track 3 technical blog submission.
   `pre_upgrade`, `post_upgrade`, and `try-runtime` are covered at a high level.
 - The article explains why large or unbounded migrations may need a multi-block
   migration strategy.
+- The article includes a migration review template covering old/new storage,
+  bounds, weight, guards, try-runtime state, invariants, cleanup, and
+  operations.
 
 ## Builder usefulness
 
 - The preparation workflow is ordered enough for a builder to follow.
+- A reviewer can use the migration review template before approving an upgrade
+  that changes storage.
 - The operational checklist includes build provenance, benchmark updates,
   client compatibility, monitoring, and incident response.
 - The article gives concrete failure modes reviewers can check before an
