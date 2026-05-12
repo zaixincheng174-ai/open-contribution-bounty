@@ -18,6 +18,8 @@ accepting it as a Track 3 technical blog submission.
 ## Technical completeness
 
 - The `offchain_worker` hook is introduced.
+- Concrete hook, signed submission, and unsigned validation examples are
+  clearly labeled as sketches, not drop-in pallet code.
 - HTTP requests, local storage, off-chain indexing, transaction submission, and
   runtime validation are covered.
 - `ValidateUnsigned` risk is discussed.

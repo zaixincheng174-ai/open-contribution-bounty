@@ -83,6 +83,31 @@ Fourth, the runtime validates the submitted transaction. This is the real
 security boundary. The runtime must check signatures, freshness, replay
 protection, bounds, origin, and data validity before writing anything on-chain.
 
+## Minimal pallet shape
+
+The exact code depends on the pallet's types, errors, calls, and runtime
+configuration, but a small off-chain worker usually starts with this shape:
+
+```rust
+#[pallet::hooks]
+impl<T: Config> Hooks<BlockNumberFor<T>> for Pallet<T> {
+    fn offchain_worker(block_number: BlockNumberFor<T>) {
+        if !Self::should_run(block_number) {
+            return;
+        }
+
+        if let Err(error) = Self::fetch_and_submit(block_number) {
+            log::warn!("off-chain worker failed: {:?}", error);
+        }
+    }
+}
+```
+
+This sketch intentionally leaves out imports, error types, HTTP parsing, and
+transaction construction. The useful pattern is the boundary: the hook decides
+whether to run, the worker gathers node-local information, and any state
+change still goes through a normal extrinsic.
+
 ## Signed transactions
 
 Signed transactions are the safest default when a worker acts on behalf of a
@@ -100,6 +125,24 @@ Use signed transactions when:
 The tradeoff is operational. Nodes need access to the signing key. In a
 validator or production node environment, key management and permissions must
 be treated carefully.
+
+A signed submission often looks like this at a high level:
+
+```rust
+let signer = Signer::<T, T::AuthorityId>::any_account();
+
+let _ = signer.send_signed_transaction(|_account| {
+    Call::submit_price {
+        block_number,
+        price,
+    }
+});
+```
+
+The local node must have an off-chain key available for `T::AuthorityId`, but
+the runtime should still validate the signed origin and payload. A signed
+off-chain transaction is easier to reason about than an unsigned one because it
+keeps normal account authentication in the path.
 
 ## Unsigned transactions
 
@@ -124,6 +167,38 @@ The `ValidateUnsigned` implementation is critical. It should define:
 
 Weak unsigned validation can turn an off-chain worker feature into a network
 spam vector.
+
+A validation sketch for an unsigned off-chain worker call looks like this:
+
+```rust
+impl<T: Config> ValidateUnsigned for Pallet<T> {
+    type Call = Call<T>;
+
+    fn validate_unsigned(
+        _source: TransactionSource,
+        call: &Self::Call,
+    ) -> TransactionValidity {
+        let Call::submit_unsigned { block_number, payload } = call else {
+            return InvalidTransaction::Call.into();
+        };
+
+        ensure_recent::<T>(*block_number)?;
+        ensure_not_seen::<T>(&payload.id)?;
+
+        ValidTransaction::with_tag_prefix("ocw-submit")
+            .and_provides(payload.id)
+            .longevity(64_u64)
+            .propagate(true)
+            .build()
+    }
+}
+```
+
+Treat this as design-oriented pseudo-code. Newer runtimes may validate against
+a wider runtime call type, and real pallets need concrete freshness checks,
+payload verification, duplicate tracking, and benchmark-aware weights. The
+important part is that validation happens before the transaction enters the
+pool as acceptable unsigned data.
 
 ## Local storage and off-chain indexing
 
